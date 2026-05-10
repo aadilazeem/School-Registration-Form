@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Registration Form</title>
+<style>
+    body { font-family: 'Times New Roman', Times, serif; color: #222; background-color: #f4f4f4; padding: 20px; margin: 0; }
+    .form-container { background-color: #ffffff; padding: 40px; border: 1px solid #ccc; border-radius: 8px; max-width: 850px; margin: 0 auto; line-height: 1.5; }
+    .text-green { color: #2e9f73; }
+    .text-pink { color: #d12260; }
+    .text-blue { color: #1e81b0; }
+    h2, h3, p { margin: 0; }
+    .header-section { margin-bottom: 15px; }
+    .header-section h2 { font-weight: 900; font-size: 22px; margin-bottom: 3px; }
+    .header-section h3 { font-size: 18px; margin-bottom: 3px; }
+    .header-section p { font-weight: bold; font-size: 14px; }
+    .photo-box { border: 1px solid #999; width: 85px; height: 105px; text-align: center; font-size: 10px; padding-top: 30px; box-sizing: border-box; background: #fafafa; color: #555; float: right; }
+    .top-layout { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+    .center-title { text-align: center; flex-grow: 1; }
+    .instruction { text-align: right; font-size: 11px; margin-bottom: 15px; }
+    .input-row { display: flex; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .input-group { display: flex; flex-direction: column; flex-grow: 1; }
+    .input-group label { font-size: 10px; color: #555; text-align: center; margin-top: 1px; }
+    input[type="text"] { background-color: #e2e4e6; border: 1px solid #ccc; height: 23px; padding: 0 4px; font-family: Arial, sans-serif; font-size: 13px; width: 100%; box-sizing: border-box; }
+    .address-section { font-size: 12px; line-height: 2.2; margin-bottom: 20px; }
+    .address-input { background-color: transparent !important; border: none !important; border-bottom: 1px solid #000 !important; outline: none; height: 18px !important; }
+    .parents-section { font-size: 12px; margin-bottom: 15px; width: 100%; border-collapse: collapse; }
+    .parents-section td { padding: 3px 0; }
+    .parents-section input[type="text"] { background-color: transparent; border: none; border-bottom: 1px solid #000; outline: none; height: 18px; width: 90%; }
+    .footer { text-align: right; color: #c71e5c; font-size: 12px; font-weight: bold; margin-top: 25px; }
+    .page-number { background-color: #f7dadd; padding: 1px 6px; border-radius: 50%; }
+    
+    /* Styles for PDF generation to ensure it fits on a single A4 page with header/footer space */
+    .pdf-export { 
+        width: 100% !important; 
+        max-width: 100% !important;
+        padding: 12mm 10mm !important; /* 12mm top/bottom for header/footer, 10mm sides */
+        line-height: 1.2 !important; 
+        margin: 0 !important; 
+        background-color: white !important;
+        font-size: 11px !important; /* Optimal base text size to fill A4 */
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+    .pdf-export .form-container { padding: 0 !important; border: none !important; background: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; line-height: 1.2 !important; }
+    .pdf-export h2 { font-size: 16px !important; margin: 2px 0 !important; font-weight: bold !important; }
+    .pdf-export h3 { font-size: 13px !important; margin: 2px 0 !important; }
+    .pdf-export .text-pink { font-size: 11px !important; }
+    .pdf-export .header-section { margin-bottom: 8px !important; }
+    .pdf-export .top-layout { margin-top: 0 !important; margin-bottom: 8px !important; gap: 5px !important; }
+    .pdf-export .center-title { padding: 0 !important; }
+    .pdf-export .photo-box { width: 75px !important; height: 95px !important; padding-top: 25px !important; font-size: 9px !important; }
+    .pdf-export .input-row { margin-bottom: 4mm !important; margin-top: 2mm !important; gap: 5px !important; align-items: center !important; }
+    .pdf-export .input-row[style*="margin-top"] { margin-top: 2mm !important; }
+    .pdf-export input[type="text"] { font-size: 11px !important; height: 18px !important; padding: 2px 3px !important; margin: 0 !important; }
+    .pdf-export input[type="text"][style*="width"] { width: auto !important; flex: 0 0 auto !important; max-width: 100% !important; }
+    .pdf-export .input-group { margin: 0 !important; }
+    .pdf-export .input-group label { font-size: 9px !important; margin-top: 1px !important; }
+    .pdf-export strong { font-weight: bold !important; font-size: 11px !important; margin: 0 !important; }
+    .pdf-export strong[style*="width"] { width: auto !important; }
+    .pdf-export small { font-size: 9px !important; }
+    .pdf-export .instruction { font-size: 10px !important; margin-bottom: 4mm !important; text-align: right !important; margin-top: 0 !important; }
+    .pdf-export .address-section { font-size: 11px !important; margin-bottom: 5mm !important; margin-top: 3mm !important; line-height: 1.5 !important; }
+    .pdf-export .address-section[style*="margin-top"] { margin-top: 3mm !important; }
+    .pdf-export .address-input { height: 18px !important; }
+    .pdf-export .parents-section { font-size: 11px !important; margin-bottom: 4mm !important; margin-top: 3mm !important; }
+    .pdf-export .parents-section td { padding: 2px 2px !important; }
+    .pdf-export .parents-section input { font-size: 11px !important; height: 18px !important; padding: 2px 3px !important; width: auto !important; }
+    .pdf-export br { margin: 0 !important; padding: 0 !important; }
+    .pdf-export [style*="margin-left"] { margin-left: 3px !important; }
+    .pdf-export [style*="margin-top: 20px"] { margin-top: 3mm !important; }
+    .pdf-export [style*="margin-bottom"] { margin-bottom: auto !important; }
+    .pdf-export [style*="padding-top"] { padding-top: auto !important; }
+
+    @media print {
+        .no-print { display: none !important; }
+        body { background-color: white; padding: 0; margin: 0; }
+        .form-container { border: none; padding: 15mm 12mm !important; box-shadow: none; margin: 0; max-width: 100%; }
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="no-print" style="text-align: center; margin-bottom: 20px;">
+    <button id="downloadPdfBtn" style="padding: 10px 20px; background-color: #2e9f73; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        Save to PDF
+    </button>
+</div>
+
+<div class="form-container" id="form-content">
+   
+
+    <div class="top-layout">
+        <div style="width: 100px;"></div> <div class="center-title">
+            <span class="text-pink" style="font-weight: bold; font-size: 15px;">Evergreen Academy, Siraha 1, Siraha </span>
+            <h2 style="margin: 5px 0; color: #000;">School Registration Form</h2>
+            <h3 style="margin: 5px 0; color: #000;">Grade 6</h3>
+        </div>
+        <div>
+            <div class="photo-box">Paste your<br>photo here</div>
+        </div>
+    </div>
+
+    <div class="instruction">(Please write with black ink in capital letters.)</div>
+
+    <div class="input-row">
+        <strong style="width: 150px;">Name <small style="font-weight: normal;">(English):</small></strong>
+        <div class="input-group">
+            <input type="text" name="eng_last" />
+            <label>(Last)</label>
+        </div>
+        <div class="input-group" style="flex-grow: 1.5;">
+            <input type="text" name="eng_first_middle" />
+            <label>(First and middle)</label>
+        </div>
+    </div>
+
+    <div class="input-row">
+        <strong style="width: 150px;">Name <small style="font-weight: normal;">(Devanagari):</small></strong>
+        <div class="input-group">
+            <input type="text" name="dev_last" />
+            <label>(Last)</label>
+        </div>
+        <div class="input-group" style="flex-grow: 1.5;">
+            <input type="text" name="dev_first_middle" />
+            <label>(First and middle)</label>
+        </div>
+    </div>
+
+    <div class="input-row" style="margin-top: 20px;">
+        <strong>Gender:</strong> <input type="text" style="width: 150px;" name="gender" />
+        <strong style="margin-left: 20px;">Nationality:</strong> <input type="text" style="width: 150px;" name="nationality" />
+        <strong style="margin-left: 20px;">Age:</strong> <input type="text" style="width: 100px;" name="age" />
+    </div>
+
+    <div class="input-row" style="margin-top: 20px; align-items: flex-start;">
+        <strong style="margin-top: 5px;">Date of Birth:</strong>
+        <div class="input-group" style="margin-left: 10px; flex-grow: 0; width: 200px;">
+            <input type="text" name="dob_bs" />
+            <label>(Day/month/year)</label>
+        </div>
+        <strong style="margin-top: 5px;">BS</strong>
+        <div class="input-group" style="margin-left: 20px; flex-grow: 0; width: 200px;">
+            <input type="text" name="dob_ad" />
+            <label>(Day/month/year)</label>
+        </div>
+        <strong style="margin-top: 5px;">AD</strong>
+    </div>
+
+    <div class="address-section" style="margin-top: 20px;">
+        <strong>Permanent Address:</strong> House No: <input type="text" class="address-input" style="width: 80px;" /> 
+        Tole/village: <input type="text" class="address-input" style="width: 150px;" /> 
+        Ward No: <input type="text" class="address-input" style="width: 50px;" /><br>
+        Rural municipality/municipality/sub metropolitan city/metropolitan city: <input type="text" class="address-input" style="width: 300px;" /><br>
+        District: <input type="text" class="address-input" style="width: 200px;" /> 
+        Province number/name: <input type="text" class="address-input" style="width: 200px;" />
+    </div>
+
+    <div class="address-section">
+        <strong>Temporary Address <span style="font-weight: normal;">(Fill it if different from the permanent ones):</span></strong><br>
+        House No: <input type="text" class="address-input" style="width: 80px;" /> 
+        Tole/village: <input type="text" class="address-input" style="width: 150px;" /> 
+        Ward No: <input type="text" class="address-input" style="width: 50px;" /><br>
+        Rural municipality/municipality/sub metropolitan city/metropolitan city: <input type="text" class="address-input" style="width: 300px;" /><br>
+        District: <input type="text" class="address-input" style="width: 200px;" /> 
+        Province number/name: <input type="text" class="address-input" style="width: 200px;" />
+    </div>
+
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Mother's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Father's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Guardian's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+
+    
+</div>
+
+<script>
+    document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+        const element = document.getElementById('form-content');
+        
+        // Temporarily apply a class to compact the form so it perfectly fits on one A4 page
+        element.classList.add('pdf-export');
+
+        // Ensure input values are set as attributes so html2canvas captures them
+        const inputs = document.querySelectorAll('#form-content input');
+        inputs.forEach(input => {
+            if (input.type === 'text') {
+                input.setAttribute('value', input.value);
+            }
+        });
+
+        const opt = {
+            margin:       0, // No margin - we handle it in CSS padding
+            filename:     'Registration_Form.pdf',
+            image:        { type: 'jpeg', quality: 0.95 },
+            html2canvas:  { scale: 2, logging: false, useCORS: true, allowTaint: true, windowHeight: 1400 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+            pagebreak:    { mode: 'avoid-all' } // Prevent page breaks
+        };
+
+        // Generate PDF and then remove the compacting class
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.classList.remove('pdf-export');
+        });
+    });
+</script>
+
+</body>
+</html>

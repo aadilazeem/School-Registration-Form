@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Registration Form</title>
+<style>
+    body { font-family: 'Times New Roman', Times, serif; color: #222; background-color: #f4f4f4; padding: 20px; margin: 0; }
+    .form-container { background-color: #ffffff; padding: 40px; border: 1px solid #ccc; border-radius: 8px; max-width: 850px; margin: 0 auto; line-height: 1.5; }
+    .text-green { color: #2e9f73; }
+    .text-pink { color: #d12260; }
+    .text-blue { color: #1e81b0; }
+    h2, h3, p { margin: 0; }
+    .header-section { margin-bottom: 15px; }
+    .header-section h2 { font-weight: 900; font-size: 22px; margin-bottom: 3px; }
+    .header-section h3 { font-size: 18px; margin-bottom: 3px; }
+    .header-section p { font-weight: bold; font-size: 14px; }
+    .photo-box { border: 1px solid #999; width: 85px; height: 105px; text-align: center; font-size: 10px; padding-top: 0px; box-sizing: border-box; background: #fafafa; color: #555; float: right; overflow: hidden; position: relative; }
+    .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-box input[type="file"] { display: none; }
+    .photo-box-placeholder { padding-top: 30px; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .photo-upload-trigger { cursor: pointer; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .top-layout { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+    .center-title { text-align: center; flex-grow: 1; }
+    .instruction { text-align: right; font-size: 11px; margin-bottom: 15px; }
+    .input-row { display: flex; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .input-group { display: flex; flex-direction: column; flex-grow: 1; }
+    .input-group label { font-size: 10px; color: #555; text-align: center; margin-top: 1px; }
+    input[type="text"] { background-color: #e2e4e6; border: 1px solid #ccc; height: 23px; padding: 0 4px; font-family: Arial, sans-serif; font-size: 13px; width: 100%; box-sizing: border-box; }
+    .address-section { font-size: 12px; line-height: 2.2; margin-bottom: 20px; }
+    .address-input { background-color: transparent !important; border: none !important; border-bottom: 1px solid #000 !important; outline: none; height: 18px !important; }
+    .parents-section { font-size: 12px; margin-bottom: 15px; width: 100%; border-collapse: collapse; }
+    .parents-section td { padding: 3px 0; }
+    .parents-section input[type="text"] { background-color: transparent; border: none; border-bottom: 1px solid #000; outline: none; height: 18px; width: 90%; }
+    .footer { text-align: right; color: #c71e5c; font-size: 12px; font-weight: bold; margin-top: 25px; }
+    .page-number { background-color: #f7dadd; padding: 1px 6px; border-radius: 50%; }
+    
+    /* Styles for PDF generation to ensure it fits on a single A4 page with header/footer space */
+    .pdf-export { 
+        width: 100% !important; 
+        max-width: 100% !important;
+        padding: 12mm 10mm !important; /* 12mm top/bottom for header/footer, 10mm sides */
+        line-height: 1.2 !important; 
+        margin: 0 !important; 
+        background-color: white !important;
+        font-size: 11px !important; /* Optimal base text size to fill A4 */
+        overflow: visible !important;
+        box-sizing: border-box !important;
+    }
+    .pdf-export .form-container { padding: 0 !important; border: none !important; background: none !important; margin: 0 !important; max-width: 100% !important; width: 100% !important; line-height: 1.2 !important; }
+    .pdf-export h2 { font-size: 16px !important; margin: 2px 0 !important; font-weight: bold !important; }
+    .pdf-export h3 { font-size: 13px !important; margin: 2px 0 !important; }
+    .pdf-export .text-pink { font-size: 11px !important; }
+    .pdf-export .header-section { margin-bottom: 8px !important; }
+    .pdf-export .top-layout { margin-top: 0 !important; margin-bottom: 8px !important; gap: 5px !important; }
+    .pdf-export .center-title { padding: 0 !important; }
+    .pdf-export .photo-box { width: 75px !important; height: 95px !important; padding-top: 0px !important; font-size: 9px !important; }
+    .pdf-export .photo-box img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+    .pdf-export .input-row { margin-bottom: 4mm !important; margin-top: 2mm !important; gap: 5px !important; align-items: center !important; }
+    .pdf-export .input-row[style*="margin-top"] { margin-top: 2mm !important; }
+    .pdf-export input[type="text"] { font-size: 11px !important; height: 18px !important; padding: 2px 3px !important; margin: 0 !important; }
+    .pdf-export input[type="date"] { font-size: 11px !important; height: 18px !important; padding: 2px 3px !important; margin: 0 !important; }
+    .pdf-export input[type=\"text\"][id=\"schoolName\"], .pdf-export input[type=\"text\"][id=\"gradeLevel\"] { border: none !important; background-color: transparent !important; font-weight: bold !important; }    .pdf-export input[type="text"][style*="width"] { width: auto !important; flex: 0 0 auto !important; max-width: 100% !important; }
+    .pdf-export .input-group { margin: 0 !important; }
+    .pdf-export .input-group label { font-size: 9px !important; margin-top: 1px !important; }
+    .pdf-export strong { font-weight: bold !important; font-size: 11px !important; margin: 0 !important; }
+    .pdf-export strong[style*="width"] { width: auto !important; }
+    .pdf-export small { font-size: 9px !important; }
+    .pdf-export .instruction { font-size: 10px !important; margin-bottom: 4mm !important; text-align: right !important; margin-top: 0 !important; }
+    .pdf-export .address-section { font-size: 11px !important; margin-bottom: 5mm !important; margin-top: 3mm !important; line-height: 1.5 !important; }
+    .pdf-export .address-section[style*="margin-top"] { margin-top: 3mm !important; }
+    .pdf-export .address-input { height: 18px !important; }
+    .pdf-export .parents-section { font-size: 11px !important; margin-bottom: 4mm !important; margin-top: 3mm !important; }
+    .pdf-export .parents-section td { padding: 2px 2px !important; }
+    .pdf-export .parents-section input { font-size: 11px !important; height: 18px !important; padding: 2px 3px !important; width: auto !important; }
+    .pdf-export br { margin: 0 !important; padding: 0 !important; }
+    .pdf-export [style*="margin-left"] { margin-left: 3px !important; }
+    .pdf-export [style*="margin-top: 20px"] { margin-top: 3mm !important; }
+    .pdf-export [style*="margin-bottom"] { margin-bottom: auto !important; }
+    .pdf-export [style*="padding-top"] { padding-top: auto !important; }
+
+    @media print {
+        .no-print { display: none !important; }
+        body { background-color: white; padding: 0; margin: 0; }
+        .form-container { border: none; padding: 15mm 12mm !important; box-shadow: none; margin: 0; max-width: 100%; }
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="no-print" style="margin-bottom: 20px; padding: 15px; background-color: #f0f0f0; border-radius: 8px; border: 1px solid #ddd;">
+    <div style="text-align: center; margin-bottom: 15px;">
+        <h3 style="margin: 0 0 10px 0; color: #333;">Select Form Sections</h3>
+        <p style="margin: 0 0 10px 0; font-size: 13px; color: #666;">Choose which fields you want to include in your form:</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-personal" checked style="margin-right: 8px; cursor: pointer;" /> Personal Information
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-permanent" checked style="margin-right: 8px; cursor: pointer;" /> Permanent Address
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-temporary" checked style="margin-right: 8px; cursor: pointer;" /> Temporary Address
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-mother" checked style="margin-right: 8px; cursor: pointer;" /> Mother's Information
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-father" checked style="margin-right: 8px; cursor: pointer;" /> Father's Information
+        </label>
+        <label style="display: flex; align-items: center; font-size: 14px; cursor: pointer;">
+            <input type="checkbox" id="chk-guardian" checked style="margin-right: 8px; cursor: pointer;" /> Guardian's Information
+        </label>
+    </div>
+    <div style="text-align: center; gap: 10px; display: flex; justify-content: center; flex-wrap: wrap;">
+        <button id="downloadPdfBtn" style="padding: 10px 20px; background-color: #2e9f73; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            📥 Save to PDF
+        </button>
+        <button id="printBtn" style="padding: 10px 20px; background-color: #1e81b0; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            🖨️ Print
+        </button>
+        <button id="resetBtn" style="padding: 10px 20px; background-color: #d12260; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            ↻ Reset Form
+        </button>
+    </div>
+</div>
+
+<div class="form-container" id="form-content">
+   
+
+    <div class="top-layout">
+        <div style="width: 100px;"></div> <div class="center-title">
+            <input type="text" id="schoolName" style="background-color: #fff; border: 1px solid #ddd; padding: 5px 8px; font-weight: bold; font-size: 15px; width: 100%; max-width: 400px; margin: 0 auto; display: block; color: #d12260; text-align: center; box-sizing: border-box;" value="Evergreen Academy, Siraha 1, Siraha" />
+            <h2 style="margin: 5px 0; color: #000;">School Registration Form</h2>
+            <input type="text" id="gradeLevel" style="background-color: #fff; border: 1px solid #ddd; padding: 5px 8px; font-size: 14px; width: 120px; margin: 0 auto; display: block; text-align: center; box-sizing: border-box;" value="Grade 6" />
+        </div>
+        <div>
+            <div class="photo-box" id="photoBox">
+                <div class="photo-box-placeholder" id="photoPlaceholder">
+                    <div class="photo-upload-trigger" onclick="document.getElementById('photoInput').click();">Click to<br>add photo</div>
+                </div>
+                <img id="photoImage" style="display: none;" />
+                <input type="file" id="photoInput" accept="image/*" />
+            </div>
+        </div>
+    </div>
+
+    <div class="instruction">(Please write with black ink in capital letters.)</div>
+    
+    <div class="input-row" style="margin-bottom: 18px; padding: 10px; background-color: #f9f9f9; border-radius: 4px; border-left: 3px solid #d12260;">
+        <strong style="width: 180px;">Form Fill-up Date:</strong>
+        <input type="date" id="formDate" style="background-color: #fff; border: 1px solid #ccc; height: 23px; padding: 0 4px; font-family: Arial, sans-serif; font-size: 13px; width: 150px; box-sizing: border-box;" />
+    </div>
+
+    <!-- Personal Information Section -->
+    <div id="section-personal">
+    <div class="input-row">
+        <strong style="width: 150px;">Name <small style="font-weight: normal;">(English):</small></strong>
+        <div class="input-group">
+            <input type="text" name="eng_last" />
+            <label>(Last)</label>
+        </div>
+        <div class="input-group" style="flex-grow: 1.5;">
+            <input type="text" name="eng_first_middle" />
+            <label>(First and middle)</label>
+        </div>
+    </div>
+
+    <div class="input-row">
+        <strong style="width: 150px;">Name <small style="font-weight: normal;">(Devanagari):</small></strong>
+        <div class="input-group">
+            <input type="text" name="dev_last" />
+            <label>(Last)</label>
+        </div>
+        <div class="input-group" style="flex-grow: 1.5;">
+            <input type="text" name="dev_first_middle" />
+            <label>(First and middle)</label>
+        </div>
+    </div>
+
+    <div class="input-row" style="margin-top: 20px;">
+        <strong>Gender:</strong> <input type="text" style="width: 150px;" name="gender" />
+        <strong style="margin-left: 20px;">Nationality:</strong> <input type="text" style="width: 150px;" name="nationality" />
+        <strong style="margin-left: 20px;">Age:</strong> <input type="text" style="width: 100px;" name="age" />
+    </div>
+
+    <div class="input-row" style="margin-top: 20px; align-items: flex-start;">
+        <strong style="margin-top: 5px;">Date of Birth:</strong>
+        <div class="input-group" style="margin-left: 10px; flex-grow: 0; width: 200px;">
+            <input type="text" name="dob_bs" />
+            <label>(Day/month/year)</label>
+        </div>
+        <strong style="margin-top: 5px;">BS</strong>
+        <div class="input-group" style="margin-left: 20px; flex-grow: 0; width: 200px;">
+            <input type="text" name="dob_ad" />
+            <label>(Day/month/year)</label>
+        </div>
+        <strong style="margin-top: 5px;">AD</strong>
+    </div>
+    </div>
+
+    <!-- Permanent Address Section -->
+    <div id="section-permanent">
+    <div class="address-section" style="margin-top: 20px;">
+        <strong>Permanent Address:</strong> House No: <input type="text" class="address-input" style="width: 80px;" /> 
+        Tole/village: <input type="text" class="address-input" style="width: 150px;" /> 
+        Ward No: <input type="text" class="address-input" style="width: 50px;" /><br>
+        Rural municipality/municipality/sub metropolitan city/metropolitan city: <input type="text" class="address-input" style="width: 300px;" /><br>
+        District: <input type="text" class="address-input" style="width: 200px;" /> 
+        Province number/name: <input type="text" class="address-input" style="width: 200px;" />
+    </div>
+    </div>
+
+    <!-- Temporary Address Section -->
+    <div id="section-temporary">
+    <div class="address-section">
+        <strong>Temporary Address <span style="font-weight: normal;">(Fill it if different from the permanent ones):</span></strong><br>
+        House No: <input type="text" class="address-input" style="width: 80px;" /> 
+        Tole/village: <input type="text" class="address-input" style="width: 150px;" /> 
+        Ward No: <input type="text" class="address-input" style="width: 50px;" /><br>
+        Rural municipality/municipality/sub metropolitan city/metropolitan city: <input type="text" class="address-input" style="width: 300px;" /><br>
+        District: <input type="text" class="address-input" style="width: 200px;" /> 
+        Province number/name: <input type="text" class="address-input" style="width: 200px;" />
+    </div>
+    </div>
+
+    <!-- Mother's Information Section -->
+    <div id="section-mother">
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Mother's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+    </div>
+
+    <!-- Father's Information Section -->
+    <div id="section-father">
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Father's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+    </div>
+
+    <!-- Guardian's Information Section -->
+    <div id="section-guardian">
+    <table class="parents-section">
+        <tr>
+            <td style="width: 20%;"><strong>Guardian's full name:</strong></td>
+            <td style="width: 45%;"><input type="text" /></td>
+            <td style="width: 10%;">Nationality:</td>
+            <td style="width: 25%;"><input type="text" /></td>
+        </tr>
+        <tr>
+            <td>Occupation:</td>
+            <td><input type="text" /></td>
+            <td colspan="2">
+                Telephone: <input type="text" style="width: 100px;" /> 
+                Mobile: <input type="text" style="width: 120px;" />
+            </td>
+        </tr>
+    </table>
+    </div>
+
+    
+</div>
+
+<script>
+    // Initialize form with today's date
+    function initializeForm() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        document.getElementById('formDate').value = `${year}-${month}-${day}`;
+    }
+    
+    // Call initialization when page loads
+    window.addEventListener('load', initializeForm);
+
+    // Toggle sections visibility
+    const sections = [
+        { id: 'chk-personal', sectionId: 'section-personal' },
+        { id: 'chk-permanent', sectionId: 'section-permanent' },
+        { id: 'chk-temporary', sectionId: 'section-temporary' },
+        { id: 'chk-mother', sectionId: 'section-mother' },
+        { id: 'chk-father', sectionId: 'section-father' },
+        { id: 'chk-guardian', sectionId: 'section-guardian' }
+    ];
+
+    sections.forEach(section => {
+        const checkbox = document.getElementById(section.id);
+        const sectionDiv = document.getElementById(section.sectionId);
+        
+        if (checkbox && sectionDiv) {
+            checkbox.addEventListener('change', function() {
+                sectionDiv.style.display = this.checked ? 'block' : 'none';
+            });
+            // Initialize display based on checkbox state
+            sectionDiv.style.display = checkbox.checked ? 'block' : 'none';
+        }
+    });
+
+    // Reset form
+    document.getElementById('resetBtn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to reset the form?')) {
+            document.querySelectorAll('#form-content input[type="text"]').forEach(input => {
+                input.value = '';
+            });
+            // Reset photo
+            photoInput.value = '';
+            photoImage.style.display = 'none';
+            photoPlaceholder.style.display = 'flex';
+            // Reset school name and grade to defaults
+            document.getElementById('schoolName').value = 'Evergreen Academy, Siraha 1, Siraha';
+            document.getElementById('gradeLevel').value = 'Grade 6';
+            // Reset date to today
+            initializeForm();
+        }
+    });
+
+    // Photo upload functionality
+    const photoInput = document.getElementById('photoInput');
+    const photoImage = document.getElementById('photoImage');
+    const photoPlaceholder = document.getElementById('photoPlaceholder');
+    
+    photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                photoImage.src = event.target.result;
+                photoImage.style.display = 'block';
+                photoPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Print functionality
+    document.getElementById('printBtn').addEventListener('click', function() {
+        window.print();
+    });
+
+    // PDF download
+    document.getElementById('downloadPdfBtn').addEventListener('click', function () {
+        const element = document.getElementById('form-content');
+        
+        // Temporarily apply a class to compact the form so it perfectly fits on one A4 page
+        element.classList.add('pdf-export');
+
+        // Ensure input values are set as attributes so html2canvas captures them
+        const inputs = document.querySelectorAll('#form-content input[type="text"]');
+        inputs.forEach(input => {
+            input.setAttribute('value', input.value);
+        });
+        
+        // Capture date value
+        const dateInput = document.getElementById('formDate');
+        if (dateInput) {
+            dateInput.setAttribute('value', dateInput.value);
+        }
+        
+        // Update school name and grade display for PDF
+        document.getElementById('schoolName').setAttribute('value', document.getElementById('schoolName').value);
+        document.getElementById('gradeLevel').setAttribute('value', document.getElementById('gradeLevel').value);
+
+        const opt = {
+            margin:       0,
+            filename:     'Registration_Form.pdf',
+            image:        { type: 'jpeg', quality: 0.95 },
+            html2canvas:  { scale: 2, logging: false, useCORS: true, allowTaint: true, windowHeight: 1400 },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+            pagebreak:    { mode: 'avoid-all' }
+        };
+
+        // Generate PDF and then remove the compacting class
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.classList.remove('pdf-export');
+        });
+    });
+</script>
+
+</body>
+</html>
